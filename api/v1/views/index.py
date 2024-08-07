@@ -2,7 +2,7 @@
 """index of API"""
 
 from api.v1.views import app_views
-from flask import jsonify, request
+from flask import jsonify
 from models import storage
 
 
@@ -15,16 +15,11 @@ def status():
 @app_views.route('/stats', methods=['Get'])
 def stats():
     """retrieves the number of each objects by type"""
-    if request.method == 'GET':
-        response = {}
-        PLURALS = {
-            "Amenity": "amenities",
-            "City": "cities",
-            "Place": "places",
-            "Review": "reviews",
-            "State": "states",
-            "User": "users"
-        }
-        for key, value in PLURALS.items():
-            response[value] = storage.count(key)
-        return jsonify(response)
+    classes = [Amenity, City, Place, Review, State, User]
+    names = ["amenities", "cities", "places", "reviews", "states", "users"]
+
+    num_objs = {}
+    for i in range(len(classes)):
+        num_objs[names[i]] = storage.count(classes[i])
+
+    return jsonify(num_objs)
