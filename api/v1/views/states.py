@@ -2,7 +2,7 @@
 """ view for State objects that handles all default RESTFul API actions"""
 
 from api.v1.views import app_views
-from flask import jsonify, abort, request
+from flask import jsonify, abort, request, make_response
 from models import storage
 from models.state import State
 
@@ -45,7 +45,7 @@ def create_state():
     data = request.get_json()
     new_state = State(**data)
     new_state.save()
-    return jsonify(new_state.to_dict()), 201
+    return make_response(jsonify(new_state.to_dict()), 201)
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
@@ -61,4 +61,4 @@ def update_state(state_id):
         if key not in ['id', 'created_at', 'updated_at']:
             setattr(state, key, value)
     state.save()
-    return jsonify(state.to_dict()), 200
+    return make_response(jsonify(state.to_dict()), 200)
